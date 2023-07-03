@@ -1,5 +1,11 @@
 import { add, subtract, multiply, divide } from "../../../utils/calculate";
 
+interface QueryParams {
+  operation: string;
+  first: number;
+  second: number;
+}
+
 export default function handler(req, res) {
   try {
     if (req.method !== "GET") {
@@ -8,7 +14,7 @@ export default function handler(req, res) {
       );
     }
 
-    const params = extractParams(req.query.params);
+    const params: QueryParams = extractParams(req.query.params);
     let result;
     switch (params.operation) {
       case "add":
@@ -32,7 +38,7 @@ export default function handler(req, res) {
   }
 }
 
-function extractParams(queryParams) {
+function extractParams(queryParams: string[]): QueryParams {
   if (queryParams.length !== 3) {
     throw new Error(
       `Query params should have 3 items. Received ${queryParams.length}: ${queryParams}`
