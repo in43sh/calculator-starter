@@ -8,8 +8,8 @@ import {
   Button,
   Divider,
   Typography,
+  OutlinedInput
 } from "@mui/material";
-import { OutlinedInput } from "@mui/material";
 import axios from "axios";
 
 import { useState, useRef, useEffect } from "react";
@@ -17,10 +17,12 @@ import { useState, useRef, useEffect } from "react";
 const Calculator = () => {
   const [operation, setOperation] = useState("");
   const [result, setResult] = useState("");
-  const firstRef = useRef(null);
-  const secondRef = useRef(null);
+  const firstRef = useRef<HTMLInputElement>(null);
+  const secondRef = useRef<HTMLInputElement>(null);
   const welcomeMessage = "Calculator is ready!";
 
+  // Parameter 'e' implicitly has an 'any' type.
+  // not sure how to fix it
   const handleChange = (e) => {
     setOperation(e.target.value);
   };
@@ -33,8 +35,8 @@ const Calculator = () => {
     e.preventDefault();
     const query = {
       operation: operation,
-      first: firstRef.current.value,
-      second: secondRef.current.value,
+      first: firstRef.current?.value,
+      second: secondRef.current?.value,
     };
 
     axios
@@ -51,9 +53,13 @@ const Calculator = () => {
     e.preventDefault();
     setOperation("");
     setResult(welcomeMessage);
-    firstRef.current.value = null;
-    secondRef.current.value = null;
-    document.querySelector("#operation").selectedIndex = 0;
+    firstRef.current!.value = "";
+    secondRef.current!.value = "";
+    // document.querySelector("#operation").selectedIndex = 0;
+    const operationSelect = document.querySelector<HTMLSelectElement>("#operation");
+    if (operationSelect) {
+      operationSelect.selectedIndex = 0;
+    }
   };
 
   return (
@@ -107,6 +113,7 @@ const Calculator = () => {
         </Grid2>
         <Grid2 xs={2}>
           <FormControl fullWidth>
+            {/* not sure how to fix this */}
             <Button variant="outlines" onClick={handleReset}>
               Reset
             </Button>
